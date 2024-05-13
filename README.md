@@ -4,7 +4,6 @@
 
 A project for creating a quick webdav server to exchange data. Open in webdav and just go.
 
-
 ## Operations
 
 1. Stop Server
