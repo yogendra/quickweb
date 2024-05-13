@@ -1,0 +1,25 @@
+
+ports:
+- name: web
+  port: 80
+  description: Shared Web
+
+tasks:
+  - name: Run Webdav
+    init: |
+      mkdir private/
+      docker build -t www . 
+      export WWW_PASSWORD=$(LC_ALL=C tr -dc 'A-Za-z0-9-@#$%^&' </dev/urandom | head -c 12 ; echo)
+      echo "$WWW_PASSWORD" > password.txt
+      echo Password: $WWW_PASSWORD
+      echo Stop/Start/Restart with Docker command: docker stop webdav or docker start webdav
+    command: |
+      docker run 
+        --name webdav \
+        --hostname webdav
+        --restart unless-stoped \
+        -d \
+        -v $PWD/private:/media/private \
+        -p 80:8000 \
+        rclone/rclone \
+        serve webdav /media/private --addr 0.0.0.0:8000 --user admin --pass "$(cat password.txt)"
